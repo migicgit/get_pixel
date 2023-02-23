@@ -1,6 +1,12 @@
 
 import pyautogui
 
+
+print("本程序目标是获取某像素点及其周边的 RGB 参考.")
+print("建议将目标窗口移动到左上减少人工计算, 使用截图软件确定窗口窗口纯画面位于左上(0,0), 以及确定需要截取的像素坐标.这个我不管.\n")
+
+print("--- 请输入横纵坐标(x,y), 别乱输我会奔溃 ---")
+
 while True:
     input_x = int(input("输入x: "))
     input_y = int(input("输入y: "))
@@ -17,10 +23,12 @@ while True:
 
     img = pyautogui.screenshot(imageFilename='get_pixel.png', region=(L, T, 3, 3))
 
+    print("该像素的九宫截图已经生成,可自行查看验证", '\n')
     point_red, point_green, point_blue = pyautogui.pixel(input_x, input_y)
 
     tolerance = [0, 0, 0]
     result = [0, 0, 0]
+    print("目标像素与相邻像素的九宫排布为：")
     for y in range(T, B):
         i = 0
         for x in range(L, R):
@@ -30,7 +38,6 @@ while True:
             tolerance[1] = abs(pix[1] - point_green)
             tolerance[2] = abs(pix[2] - point_blue)
 
-            # print('(' + str(x) + ', ' + str(y) + ') (' + str(pix[0]) + ', ' + str(pix[1]) + ', ' + str(pix[2]) + ')', end='\t\t')
             s = '(' + str(x) + ', ' + str(y) + ') (' + str(pix[0]) + ', ' + str(pix[1]) + ', ' + str(pix[2]) + ')'
             print(f"{s:32}", end='')
             i = i + 1
@@ -41,9 +48,10 @@ while True:
                     result[k] = tolerance[k]
 
     w, h = pyautogui.size()
-    print('中心点属性: [[' + str(input_x) + '/' + str(w) + ', ' + str(input_y) + '/' + str(h) + '], [' + str(point_red) + ', ' + str(point_green) + ', ' + str(point_blue) + '], 0, \'\']')
-    print('请手动修改xy坐标和纯画面分辨率！y需要减去任务栏高(一般31)，纯画面通过抓图识别一次')
-    print('RGB容差分别是:', result, '取最大值即可')
+    # print('中心点属性: [[' + str(input_x) + '/' + str(w) + ', ' + str(input_y) + '/' + str(h) + '], [' + str(point_red) + ', ' + str(point_green) + ', ' + str(point_blue) + '], 0, \'\']')
+    print('目标像素与相邻像素的 RGB 容差分别是:', result, '这里取最大值')
+    print('中心点属性: [[' + str(input_x) + '/' + str(w) + ', ' + str(input_y) + '/' + str(h) + '], [' + str(point_red) + ', ' + str(point_green) + ', ' + str(point_blue) + '], ' + str(max(result)) +', \'\']')
+    print('请手动修改xy坐标和纯画面分辨率！y需要减去标题栏高(一般31)，纯画面尺寸通过抓图识别一次')
 
     print('-' * 60)
 
